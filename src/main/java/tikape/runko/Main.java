@@ -7,22 +7,23 @@ import spark.template.thymeleaf.ThymeleafTemplateEngine;
 import tikape.runko.database.AlueDao;
 import tikape.runko.database.Database;
 import tikape.runko.database.OpiskelijaDao;
+import java.util.*;
+import java.*;
+import org.thymeleaf.*;
 
 public class Main {
 
     public static void main(String[] args) throws Exception {
         Database database = new Database("jdbc:sqlite:nachofoorumi.db");
         database.init();
-
+        
         OpiskelijaDao opiskelijaDao = new OpiskelijaDao(database);
         AlueDao alueDao = new AlueDao(database);
 
         get("/", (req, res) -> {
-            HashMap map = new HashMap<>();
-            map.put("viesti", "tervehdys");
-
-            return new ModelAndView(map, "index");
-        }, new ThymeleafTemplateEngine());
+            res.redirect("/alueet");
+            return "ok";
+        });
 
         get("/opiskelijat", (req, res) -> {
             HashMap map = new HashMap<>();
@@ -43,6 +44,19 @@ public class Main {
             map.put("alueet", alueDao.findAll());
             
             return new ModelAndView(map, "uusiindex");
+        }, new ThymeleafTemplateEngine());
+        
+        post("/alueet", (req, res) -> {
+            alueDao.lisaaAlue(req.queryParams("alue"), req.queryParams("ketju"), req.queryParams("lahettaja"), req.queryParams("viesti"));
+            res.redirect("/alueet/alue/ketju");
+            return "ok"; 
+        });
+        
+        get("/alueet/:alue", (req, res) -> {
+            HashMap map = new HashMap<>();
+            
+            
+            return new ModelAndView(map, "alue");
         }, new ThymeleafTemplateEngine());
     }
 }

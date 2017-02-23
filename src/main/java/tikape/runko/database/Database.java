@@ -48,15 +48,15 @@ public class Database {
         lista.add("CREATE TABLE Viestiketju (id integer PRIMARY KEY, alue_id integer, nimi varchar(64));");
         lista.add("CREATE TABLE Viesti (ketju_id integer, aikaleima datetime, lahettaja varchar(16), sisalto varchar(1024));");
         
-        lista.add("INSERT INTO Alue VALUES (1, 'ohjelmointi');");
-        lista.add("INSERT INTO Alue VALUES (2, 'autot');");
-        lista.add("INSERT INTO Alue VALUES (3, 'hepat');");
-        
-        lista.add("INSERT INTO Viestiketju VALUES (1, 2, 'fordi on paras');");
-        lista.add("INSERT INTO Viestiketju VALUES (2, 2, 'lamborghini jepa auto');");
-        lista.add("INSERT INTO Viestiketju VALUES (3, 1, 'java on paras kieli');");
-        lista.add("INSERT INTO Viestiketju VALUES (4, 1, 'keskustelua RUBYstä');");
-        lista.add("INSERT INTO Viestiketju VALUES (5, 3, 'shetlandsponny hc häst');");
+//        lista.add("INSERT INTO Alue VALUES (1, 'ohjelmointi');");
+//        lista.add("INSERT INTO Alue VALUES (2, 'autot');");
+//        lista.add("INSERT INTO Alue VALUES (3, 'hepat');");
+//        
+//        lista.add("INSERT INTO Viestiketju VALUES (1, 2, 'fordi on paras');");
+//        lista.add("INSERT INTO Viestiketju VALUES (2, 2, 'lamborghini jepa auto');");
+//        lista.add("INSERT INTO Viestiketju VALUES (3, 1, 'java on paras kieli');");
+//        lista.add("INSERT INTO Viestiketju VALUES (4, 1, 'keskustelua RUBYstä');");
+//        lista.add("INSERT INTO Viestiketju VALUES (5, 3, 'shetlandsponny hc häst');");
         return lista;
     }
 }
