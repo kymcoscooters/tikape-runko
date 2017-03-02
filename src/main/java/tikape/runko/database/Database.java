@@ -17,7 +17,12 @@ public class Database {
     }
 
     public void init() {
-        List<String> lauseet = sqliteLauseet();
+        List<String> lauseet = null;
+        if (this.databaseAddress.contains("postgres")) {
+            lauseet = postgreLauseet();
+        } else {
+            lauseet = sqliteLauseet();
+        }
 
         // "try with resources" sulkee resurssin automaattisesti lopuksi
         try (Connection conn = getConnection()) {
@@ -57,6 +62,16 @@ public class Database {
 //        lista.add("INSERT INTO Viestiketju VALUES (3, 1, 'java on paras kieli');");
 //        lista.add("INSERT INTO Viestiketju VALUES (4, 1, 'keskustelua RUBYstä');");
 //        lista.add("INSERT INTO Viestiketju VALUES (5, 3, 'shetlandsponny hc häst');");
+        return lista;
+    }
+    
+    private List<String> postgreLauseet() {
+        ArrayList<String> lista = new ArrayList<>();
+        
+        lista.add("CREATE TABLE Alue (id SERIAL PRIMARY KEY, nimi varchar(32));");
+        lista.add("CREATE TABLE Viestiketju (id SERIAL PRIMARY KEY, alue_id integer, nimi varchar(64));");
+        lista.add("CREATE TABLE Viesti (ketju_id integer, aikaleima timestamp, lahettaja varchar(16), sisalto varchar(1024));");
+        
         return lista;
     }
 }
