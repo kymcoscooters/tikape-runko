@@ -22,12 +22,13 @@
                 <th>Viimeisin viesti</th>
             </tr>
             <tr th:each="alue : ${alueet}">
-                <th><span th:text="${alue.nimi}">nimi</span></th>
+                <th><a th:href="@{~/alueet/{alue}(alue=${alue.nimi})}" th:text="${alue.nimi}">nimi</a></th>
                 <th><span th:text="${alue.maara}">määrä</span></th>
             </tr>
         </table>
         
         <h3>Lisää Alue!</h3>
+        
         <form method="POST" id="form">
             Uusi alue <br />
             <input type="text" name="alue" size="40" maxlength="32"/> <br />

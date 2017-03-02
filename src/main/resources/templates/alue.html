@@ -2,10 +2,35 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title>TODO supply a title</title>
+        <title th:text="${alue.nimi}">Alue</title>
+        <link rel="shortcut icon" th:href="@{https://www.cs.helsinki.fi/u/holmbrob/kuvat/favicon.ico?=v2}" type="image/x-icon" />
         <meta charset="UTF-8" />
     </head>
     <body>
-        <div>5/5 postaus</div>
+        <table>
+            <tr>
+                <th>Viestiketju</th>
+                <th>Viestien määrä</th>
+                <th>Viimeisin viesti</th>
+            </tr>
+            <tr th:each="viestiketju : ${ketjut}">
+                <th><span th:text="${viestiketju.nimi}">nimi</span></th>
+                <th><span th:text="${viestiketju.maara}">määrä</span></th>
+            </tr>
+        </table>
+        
+        <h3>Lisää uusi viestiketju!</h3>
+        
+        <form method="POST" id="form">
+            Uusi viestiketju <br />
+            <input type="text" name="ketju" size="40" maxlength="64"/> <br />
+            Viesti <br />
+        
+            <textarea rows="5" cols="40" name="viesti" form="form" maxlength="1024"/> <br />
+        
+            Lähettäjä <br />
+            <input type="text" name="lahettaja" size="40" maxlength="16"/> <br />
+            <input type="submit" value="Luo uusi viestiketju" />
+        </form>
     </body>
 </html>

@@ -25,19 +25,6 @@ public class Main {
             return "ok";
         });
 
-        get("/opiskelijat", (req, res) -> {
-            HashMap map = new HashMap<>();
-            map.put("opiskelijat", opiskelijaDao.findAll());
-
-            return new ModelAndView(map, "opiskelijat");
-        }, new ThymeleafTemplateEngine());
-
-        get("/opiskelijat/:id", (req, res) -> {
-            HashMap map = new HashMap<>();
-            map.put("opiskelija", opiskelijaDao.findOne(Integer.parseInt(req.params("id"))));
-
-            return new ModelAndView(map, "opiskelija");
-        }, new ThymeleafTemplateEngine());
         
         get("/alueet", (req, res) -> {
             HashMap map = new HashMap<>();
@@ -48,15 +35,31 @@ public class Main {
         
         post("/alueet", (req, res) -> {
             alueDao.lisaaAlue(req.queryParams("alue"), req.queryParams("ketju"), req.queryParams("lahettaja"), req.queryParams("viesti"));
-            res.redirect("/alueet/alue/ketju");
+            res.redirect("/alueet/" + req.queryParams("alue") + "/" + req.queryParams("ketju"));
             return "ok"; 
         });
         
         get("/alueet/:alue", (req, res) -> {
             HashMap map = new HashMap<>();
-            
+            System.out.println(alueDao.haeAlue(req.params(":alue")).getNimi());
+            map.put("alue", alueDao.haeAlue(req.params(":alue")));
+            map.put("ketjut", alueDao.haeKetjut(req.params(":alue")));
             
             return new ModelAndView(map, "alue");
+        }, new ThymeleafTemplateEngine());
+        
+        post("/alueet/:alue", (req, res) -> {
+            alueDao.lisaaViestiketju(req.queryParams("ketju"), alueDao.haeAlueid(req.params(":alue")), req.queryParams("lahettaja"), req.queryParams("viesti"));
+            res.redirect("/alueet/:alue/" + req.queryParams("ketju"));
+            return "ok";
+        });
+        
+        get("/alueet/:alue/:ketju", (req, res) -> {
+            HashMap map = new HashMap<>();
+            map.put("viestit", alueDao.haeViestit(req.params(":ketju")));
+            map.put("ketju", alueDao.haeKetjuPalauttaaKetjun(req.params(":ketju")));
+                    
+            return new ModelAndView(map, "ketju");
         }, new ThymeleafTemplateEngine());
     }
 }

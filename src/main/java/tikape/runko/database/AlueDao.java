@@ -2,7 +2,6 @@ package tikape.runko.database;
 
 import java.sql.Connection;
 import java.sql.Date;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,6 +9,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import tikape.runko.domain.Alue;
+import tikape.runko.domain.Viesti;
 import tikape.runko.domain.Viestiketju;
 
 public class AlueDao implements Dao<Alue, Integer> {
@@ -109,13 +109,73 @@ public class AlueDao implements Dao<Alue, Integer> {
         stmt.setString(1, nimi);
 
         ResultSet rs = stmt.executeQuery();
-
+        
+        int id = rs.getInt("id");
+        
         connection.close();
 
-        return rs.getInt("id");
+        return id;
 
     }
-
+    
+    public int haeAlueid (String alue) throws SQLException {
+        Connection connection = database.getConnection();
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Alue WHERE nimi = ?");
+        stmt.setString(1, alue);
+        
+        ResultSet rs = stmt.executeQuery();
+        
+        int id = 0;
+        
+        while (rs.next()) {
+            id = rs.getInt("id");
+        }
+        
+        connection.close();
+        
+        return id;
+    }
+    public List<Viestiketju> haeKetjut(String alue) throws SQLException {
+        int alueid = haeAlueid(alue);
+        
+        Connection connection = database.getConnection();
+        PreparedStatement stmt = connection.prepareStatement("SELECT nimi, COUNT(*) AS maara FROM Viestiketju, Viesti WHERE Alue_id = ? AND Viestiketju.id = Viesti.ketju_id GROUP BY Viestiketju.id;");
+        stmt.setInt(1, alueid);
+        
+        ResultSet rs = stmt.executeQuery();
+        
+        List<Viestiketju> lista = new ArrayList<>();
+        
+        while(rs.next()) {
+            String nimi = rs.getString("nimi");
+            int maara = rs.getInt("maara");
+            
+            lista.add(new Viestiketju(maara, nimi));
+        }
+        
+        connection.close();
+        
+        return lista;
+    }
+    
+    public Alue haeAlue(String alue) throws SQLException {
+        Connection connection = database.getConnection();
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Alue WHERE nimi = ?");
+        stmt.setString(1, alue);
+        
+        ResultSet rs = stmt.executeQuery();
+        Alue a = null;
+        
+        while (rs.next()) {
+            int id = rs.getInt("id");
+            String nimi = rs.getString("nimi");
+            a = new Alue(nimi, id);
+        }
+        
+        connection.close();
+        
+        return a;
+    }
     public void lisaaViestiketju(String ketju, int alue, String lahettaja, String viesti) throws SQLException {
         Connection connection = database.getConnection();
         PreparedStatement stmt = connection.prepareStatement("INSERT INTO Viestiketju (alue_id, nimi) VALUES (?, ?);");
@@ -141,5 +201,41 @@ public class AlueDao implements Dao<Alue, Integer> {
         stmt.execute();
 
         connection.close();
+    }
+    
+    public List<Viesti> haeViestit(String ketju) throws SQLException {
+        Connection connection = database.getConnection();
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Viesti WEHERE ketju_id=?;");
+        stmt.setInt(1, haeKetju(ketju));
+        
+        ResultSet rs = stmt.executeQuery();
+        
+        ArrayList<Viesti> lista = new ArrayList<>();
+        
+        while (rs.next()) {
+            String lahettaja = rs.getString("lahettaja");
+            String viesti = rs.getString("viesti");
+            
+            lista.add(new Viesti(lahettaja, viesti));
+        }
+        
+        connection.close();
+        
+        return lista;
+    }
+    
+    public Viestiketju haeKetjuPalauttaaKetjun(String ketju) throws SQLException{
+        Connection connection = database.getConnection();
+        PreparedStatement stmt = connection.prepareCall("SELECT * FROM Viestiketju WHERE nimi=?;");
+        stmt.setString(0, ketju);
+        
+        ResultSet rs = stmt.executeQuery();
+        
+        String nimi = rs.getString("nimi");
+        int maara = rs.getInt("id");
+        
+        connection.close();
+        
+        return new Viestiketju(maara, nimi);
     }
 }

@@ -2,12 +2,18 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title>TODO supply a title</title>
+        <title th:text="${ketju.nimi}">ketju</title>
         <meta charset="UTF-8" />
-        
+        <link rel="shortcut icon" th:href="@{https://www.cs.helsinki.fi/u/holmbrob/kuvat/favicon.ico?=v2}" type="image/x-icon" />
     </head>
     <body>
         
-        <div>TODO write content</div>
+        <span th:text="${ketju.nimi}">ketju</span>
+        <br />
+        <br />
+        
+        <ol>
+            <li th:each="viesti "
+        </ol>
     </body>
 </html>
