@@ -7,13 +7,32 @@
         <link rel="shortcut icon" th:href="@{https://www.cs.helsinki.fi/u/holmbrob/kuvat/favicon.ico?=v2}" type="image/x-icon" />
     </head>
     <body>
-        
-        <span th:text="${ketju.nimi}">ketju</span>
+        <a th:href="@{~/alueet}"><img src="https://www.cs.helsinki.fi/u/holmbrob/kuvat/neaonachologo.png?=v2" alt="Etusivulle!"/></a>
+        <br />
+        <a th:href="@{~/alueet/{alue}(alue=${alue.nimi})}" style="text-decoration: none"><h1 th:text="${alue.nimi}">alue</h1></a>
+        <h2 th:text="${ketju.nimi}">ketju</h2>
         <br />
         <br />
         
-        <ol>
-            <li th:each="viesti "
-        </ol>
+        <ul style="list-style-type: none">
+            <li th:each="viesti : ${viestit}">
+                <span th:text="${viesti.lahettaja}" style="font-weight: bold">lahettaja</span>
+                : 
+                <span th:text="${viesti.viesti}" style="word-wrap: break-word">viesti</span>
+            </li>
+        </ul>
+        <br />
+        
+        <h3>Lisää viesti!</h3>
+        
+        <form method="POST" id="form">
+            Uusi viesti <br />
+            <textarea rows="5" cols="40" name="viesti" form="form" maxlength="1024"/> <br />
+            Lähettäjä <br />
+            <input type="text" name="lahettaja" size="40" maxlength="16"/> <br />
+            <input type="submit" value="Lisää viesti" />
+        </form>
+        <br />
+        <a href="#Top" style="text-decoration: none">Palaa sivun alkuun</a>
     </body>
 </html>

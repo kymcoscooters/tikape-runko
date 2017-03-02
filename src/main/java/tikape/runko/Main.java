@@ -54,7 +54,6 @@ public class Main {
         
         get("/alueet/:alue", (req, res) -> {
             HashMap map = new HashMap<>();
-            System.out.println(alueDao.haeAlue(req.params(":alue")).getNimi());
             map.put("alue", alueDao.haeAlue(req.params(":alue")));
             map.put("ketjut", alueDao.haeKetjut(req.params(":alue")));
             
@@ -63,7 +62,7 @@ public class Main {
         
         post("/alueet/:alue", (req, res) -> {
             alueDao.lisaaViestiketju(req.queryParams("ketju"), alueDao.haeAlueid(req.params(":alue")), req.queryParams("lahettaja"), req.queryParams("viesti"));
-            res.redirect("/alueet/:alue/" + req.queryParams("ketju"));
+            res.redirect("/onnistunut");
             return "ok";
         });
         
@@ -71,8 +70,22 @@ public class Main {
             HashMap map = new HashMap<>();
             map.put("viestit", alueDao.haeViestit(req.params(":ketju")));
             map.put("ketju", alueDao.haeKetjuPalauttaaKetjun(req.params(":ketju")));
+            map.put("alue", alueDao.haeAlue(req.params(":alue")));
                     
             return new ModelAndView(map, "ketju");
+        }, new ThymeleafTemplateEngine());
+        
+        post("/alueet/:alue/:ketju", (req, res) -> {
+            alueDao.lisaaViesti(req.queryParams("lahettaja"), req.queryParams("viesti"), alueDao.haeKetju(req.params(":ketju")));
+            res.redirect("/onnistunut");
+            return "ok";
+        });
+        
+        get("/onnistunut", (req, res) -> {
+            HashMap map = new HashMap<>();
+            
+            return new ModelAndView(map, "OnnistunutPostaus");
+            
         }, new ThymeleafTemplateEngine());
     }
 }

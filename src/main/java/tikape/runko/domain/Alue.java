@@ -3,11 +3,19 @@ package tikape.runko.domain;
 public class Alue {
     private String nimi;
     private int maara;
+    private String viimeisin;
 
-    public Alue(String nimi, int maara) {
+    public Alue(String nimi, int maara, String viimeisin) {
         this.nimi = nimi;
         this.maara = maara;
+        this.viimeisin = viimeisin;
     }
+
+    public String getViimeisin() {
+        return viimeisin;
+    }
+
+    
 
     public String getNimi() {
         return nimi;
