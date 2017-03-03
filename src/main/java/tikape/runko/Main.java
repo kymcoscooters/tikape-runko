@@ -6,10 +6,8 @@ import static spark.Spark.*;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
 import tikape.runko.database.AlueDao;
 import tikape.runko.database.Database;
-import tikape.runko.database.OpiskelijaDao;
-import java.util.*;
 import java.*;
-import org.thymeleaf.*;
+import tikape.runko.domain.Sivu;
 
 public class Main {
 
@@ -30,7 +28,6 @@ public class Main {
         
         database.init();
         
-        OpiskelijaDao opiskelijaDao = new OpiskelijaDao(database);
         AlueDao alueDao = new AlueDao(database);
 
         get("/", (req, res) -> {
@@ -43,19 +40,26 @@ public class Main {
             HashMap map = new HashMap<>();
             map.put("alueet", alueDao.findAll());
             
-            return new ModelAndView(map, "uusiindex");
+            return new ModelAndView(map, "index");
         }, new ThymeleafTemplateEngine());
         
         post("/alueet", (req, res) -> {
             alueDao.lisaaAlue(req.queryParams("alue"), req.queryParams("ketju"), req.queryParams("lahettaja"), req.queryParams("viesti"));
-            res.redirect("/alueet/" + req.queryParams("alue") + "/" + req.queryParams("ketju"));
+            res.redirect("/onnistunut");
             return "ok"; 
         });
         
         get("/alueet/:alue", (req, res) -> {
             HashMap map = new HashMap<>();
             map.put("alue", alueDao.haeAlue(req.params(":alue")));
-            map.put("ketjut", alueDao.haeKetjut(req.params(":alue")));
+            map.put("ketjut", alueDao.haeKetjut(req.params(":alue"), req.queryParams("sivu")));
+            int edellinensivu = Integer.parseInt(req.queryParams("sivu")) -1;
+            int seuraavasivu = Integer.parseInt(req.queryParams("sivu")) +1;
+            if (edellinensivu == 0) {
+                edellinensivu = 1;
+            }
+            Sivu s = new Sivu(seuraavasivu, edellinensivu);
+            map.put("sivu", s);
             
             return new ModelAndView(map, "alue");
         }, new ThymeleafTemplateEngine());

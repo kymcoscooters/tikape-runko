@@ -1,11 +1,9 @@
 package tikape.runko.database;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import tikape.runko.domain.Alue;
@@ -15,7 +13,7 @@ import tikape.runko.domain.Viestiketju;
 public class AlueDao implements Dao<Alue, Integer> {
 
     private Database database;
-    private int sivu = 1;
+    
 
     public AlueDao(Database database) {
         this.database = database;
@@ -24,7 +22,7 @@ public class AlueDao implements Dao<Alue, Integer> {
 
     @Override
     public Alue findOne(Integer key) throws SQLException {
-        return new Alue("a", 1, "b");
+        return null;
     }
 
     @Override
@@ -59,13 +57,15 @@ public class AlueDao implements Dao<Alue, Integer> {
 
         ResultSet rs = stmt.executeQuery();
 
-        
         int i = 0;
         while (rs.next()) {
             i++;
         }
         
+        rs.close();
+        stmt.close();
         connection.close();
+        
         return i;
     }
 
@@ -83,8 +83,9 @@ public class AlueDao implements Dao<Alue, Integer> {
 
         stmt.execute();
 
+        stmt.close();
         connection.close();
-        System.out.println(getAluemaara() + " findall size");
+        
         lisaaViestiketju(ketju, getAluemaara(), lahettaja, viesti);
     }
 
@@ -97,10 +98,11 @@ public class AlueDao implements Dao<Alue, Integer> {
         
         int id = rs.getInt("id");
         
+        rs.close();
+        stmt.close();
         connection.close();
 
         return id;
-
     }
     
     public int haeAlueid (String alue) throws SQLException {
@@ -116,19 +118,24 @@ public class AlueDao implements Dao<Alue, Integer> {
             id = rs.getInt("id");
         }
         
+        rs.close();
+        stmt.close();
         connection.close();
         
         return id;
     }
-    public List<Viestiketju> haeKetjut(String alue) throws SQLException {
+    public List<Viestiketju> haeKetjut(String alue, String sivu) throws SQLException {
         int alueid = haeAlueid(alue);
-
+        int sivu2 = Integer.parseInt(sivu);
+        sivu2--;
+        
         Connection connection = database.getConnection();
         PreparedStatement stmt = connection.prepareStatement("SELECT Viestiketju.nimi AS nimi, "
                 + "COUNT(*) AS viesteja, aikaleima FROM Viesti, Viestiketju, Alue "
                 + "WHERE Viestiketju.id = Viesti.ketju_id AND Viestiketju.alue_id = Alue.id "
-                + "AND Alue.id = ? GROUP BY Viestiketju.id ORDER BY aikaleima DESC LIMIT 10 OFFSET ((" + sivu + " - 1) * 10);");
+                + "AND Alue.id = ? GROUP BY Viestiketju.id ORDER BY aikaleima DESC LIMIT 10 OFFSET (? * 10);");
         stmt.setInt(1, alueid);
+        stmt.setInt(2, sivu2);
         
         ResultSet rs = stmt.executeQuery();
         
@@ -142,6 +149,8 @@ public class AlueDao implements Dao<Alue, Integer> {
             lista.add(new Viestiketju(maara, nimi, aikaleima));
         }
         
+        rs.close();
+        stmt.close();
         connection.close();
         
         return lista;
@@ -161,6 +170,8 @@ public class AlueDao implements Dao<Alue, Integer> {
             a = new Alue(nimi, id, "b");
         }
         
+        rs.close();
+        stmt.close();
         connection.close();
         
         return a;
@@ -173,6 +184,7 @@ public class AlueDao implements Dao<Alue, Integer> {
 
         stmt.execute();
 
+        stmt.close();
         connection.close();
 
         lisaaViesti(lahettaja, viesti, haeKetju(ketju));
@@ -187,7 +199,8 @@ public class AlueDao implements Dao<Alue, Integer> {
         stmt.setString(3, viesti);
 
         stmt.execute();
-
+        
+        stmt.close();
         connection.close();
     }
     
@@ -207,6 +220,8 @@ public class AlueDao implements Dao<Alue, Integer> {
             lista.add(new Viesti(lahettaja, viesti));
         }
         
+        rs.close();
+        stmt.close();
         connection.close();
         
         return lista;
@@ -222,6 +237,8 @@ public class AlueDao implements Dao<Alue, Integer> {
         String nimi = rs.getString("nimi");
         int maara = rs.getInt("id");
         
+        rs.close();
+        stmt.close();
         connection.close();
         
         return new Viestiketju(maara, nimi, "b");

@@ -9,7 +9,7 @@
     <body>
         <a th:href="@{~/alueet}"><img src="https://www.cs.helsinki.fi/u/holmbrob/kuvat/neaonachologo.png?=v2" alt="Etusivulle!"/></a>
         <br />
-        <a th:href="@{~/alueet/{alue}(alue=${alue.nimi})}" style="text-decoration: none"><h1 th:text="${alue.nimi}">alue</h1></a>
+        <a th:href="@{~/alueet/{alue}?sivu=1(alue=${alue.nimi})}" style="text-decoration: none"><h1 th:text="${alue.nimi}">alue</h1></a>
         <h2 th:text="${ketju.nimi}">ketju</h2>
         <br />
         <br />

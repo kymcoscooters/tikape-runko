@@ -30,8 +30,8 @@
                 </tr>
             </tbody>
         </table>
-        <a>Edellinen sivu</a>
-        <a>Seuraava sivu</a>
+        <a th:href="@{~/alueet/{alue}?sivu={sivu}(alue=${alue.nimi}, sivu=${sivu.edellinen})}" style="text-decoration: none">Edellinen sivu</a>
+        <a th:href="@{~/alueet/{alue}?sivu={sivu}(alue=${alue.nimi}, sivu=${sivu.seuraava})}" style="text-decoration: none">Seuraava sivu</a>
 
         <h3>Lisää uusi viestiketju!</h3>
 

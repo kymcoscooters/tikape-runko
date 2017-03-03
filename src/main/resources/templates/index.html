@@ -1,16 +1,54 @@
-<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<!DOCTYPE html>
+
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-
     <head>
-        <title>Otsikko</title>
-        <meta charset="utf-8" />
+        <link rel="shortcut icon" th:href="@{https://www.cs.helsinki.fi/u/holmbrob/kuvat/favicon.ico?=v2}" type="image/x-icon" />
+        <title>Neo-nacho forum</title>
+        <meta charset="UTF-8" />
+        <style>
+            table, th, td {
+                border: 1px solid black;
+            }
+        </style>
+        
     </head>
-
+    
     <body>
-        <h1>Heippa vaan!</h1>
-
-        <p>Ja .. <span th:text="${viesti}">jotain?</span></p>
-
-        <p><a href="/opiskelijat">Tästä opiskelijalistaukseen.</a></p>
+        <a th:href="@{~/alueet}"><img src="https://www.cs.helsinki.fi/u/holmbrob/kuvat/neaonachologo.png?=v2" alt="Etusivulle!"/></a>
+        <br />
+        <br />
+        <h1>Tervetuloa NEO-nacho Foorumille</h1>
+        <br />
+        
+        <table>
+            <tr>
+                <th>Alue</th>                               
+                <th>Viestien määrä</th>
+                <th>Viimeisin viesti</th>
+            </tr>
+            <tr th:each="alue : ${alueet}">
+                <th><a th:href="@{~/alueet/{alue}?sivu=1(alue=${alue.nimi})}" th:text="${alue.nimi}" style="text-decoration: none">nimi</a></th>
+                <th><span th:text="${alue.maara}">määrä</span></th>
+                <th><span th:text="${alue.viimeisin}">viimeisin</span></th>
+            </tr>
+        </table>
+        
+        <h3>Lisää Alue!</h3>
+        
+        <form method="POST" id="form">
+            Uusi alue <br />
+            <input type="text" name="alue" size="40" maxlength="32"/> <br />
+            Viestiketju <br />
+            <input type="text" name="ketju" size="40" maxlength="64"/> <br />
+            Viesti <br />
+        
+            <textarea rows="5" cols="40" name="viesti" form="form" maxlength="1024"/> <br />
+        
+            Lähettäjä <br />
+            <input type="text" name="lahettaja" size="40" maxlength="16"/> <br />
+            <input type="submit" value="Luo uusi alue"/> <br />
+        </form>
+        
+        
     </body>
 </html>
